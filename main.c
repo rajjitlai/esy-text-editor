@@ -13,6 +13,9 @@ int main(void)
 
     XMapWindow(dsp, win);
 
+    Atom atom_delete_window = XInternAtom(dsp, "WM_DELETE_WINDOW", True);
+    XSetWMProtocols(dsp, win, &atom_delete_window, 1);
+
     XFlush(dsp);
 
     XEvent ev;
@@ -20,12 +23,17 @@ int main(void)
     while (1)
     {
         XNextEvent(dsp, &ev);
+
+        if(ev.type=ClientMessage){
+            if(ev.xclient.data.l[0] == atom_delete_window)
+                break;
+        }
     }
 
     XDestroyWindow(dsp, win);
     XCloseDisplay(dsp);
 
 
-    printf("Code run with 0 errors");
+    printf("Code run with 0 errors\n");
     return 0;
 }
