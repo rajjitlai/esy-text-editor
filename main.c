@@ -9,9 +9,9 @@ int main(void)
 {
     Display *dsp = XOpenDisplay(NULL);
 
-    win = XCreateSimpleWindow(dsp, DefaultRootWindow(dsp), 0, 0, 1280, 720, 0, 0, 0)
+    win = XCreateSimpleWindow(dsp, DefaultRootWindow(dsp), 0, 0, 1280, 720, 0, 0, 0);
 
-        XMapWindow(dsp, win);
+    XMapWindow(dsp, win);
     XFlush(dsp);
 
     XEvent ev;

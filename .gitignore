@@ -1,2 +1,5 @@
 Notes.md
 editor
+
+# run commands
+gcc -o editor *.c
