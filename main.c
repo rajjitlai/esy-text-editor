@@ -7,11 +7,12 @@ Window win;
 
 int main(void)
 {
-    Display *dsp = XOpenDisplay(NULL);
+    Display* dsp = XOpenDisplay(NULL);
 
     win = XCreateSimpleWindow(dsp, DefaultRootWindow(dsp), 0, 0, 1280, 720, 0, 0, 0);
 
     XMapWindow(dsp, win);
+
     XFlush(dsp);
 
     XEvent ev;
@@ -23,4 +24,8 @@ int main(void)
 
     XDestroyWindow(dsp, win);
     XCloseDisplay(dsp);
+
+
+    printf("Code run with 0 errors");
+    return 0;
 }
