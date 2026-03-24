@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     }
 
     Window win = XCreateSimpleWindow(dsp, DefaultRootWindow(dsp), 0, 0, 1280, 720, 0, 0, 0);
-    XSelectInput(dsp, win, ExposureMask | KeyPressMask | StructureNotifyMask);
+    XSelectInput(dsp, win, ExposureMask | KeyPressMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
     XMapWindow(dsp, win);
 
     Atom atom_delete_window = XInternAtom(dsp, "WM_DELETE_WINDOW", True);
@@ -79,6 +79,9 @@ int main(int argc, char **argv)
             render_buffer(ren, bm);
         } else if (ev.type == KeyPress) {
             handle_keypress(&ev, bm, ren);
+            render_buffer(ren, bm);
+        } else if (ev.type == ButtonPress || ev.type == ButtonRelease || ev.type == MotionNotify) {
+            handle_mouse_event(&ev, bm, ren);
             render_buffer(ren, bm);
         } else if (ev.type == SelectionRequest) {
             XSelectionRequestEvent *req = &ev.xselectionrequest;

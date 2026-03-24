@@ -16,6 +16,9 @@ typedef enum {
     MODE_SEARCH
 } InputMode;
 
+#define MENU_HEIGHT 30
+#define SCROLLBAR_WIDTH 15
+
 typedef struct {
     Display *dsp;
     Window win;
@@ -31,6 +34,8 @@ typedef struct {
     Theme theme;
     InputMode mode;
     char modal_buffer[256];
+    int menu_open;
+    int dragging_scrollbar;
 } Renderer;
 
 Renderer* render_init(Display *dsp, Window win);

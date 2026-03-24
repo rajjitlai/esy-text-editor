@@ -32,6 +32,8 @@ Renderer* render_init(Display *dsp, Window win) {
 
     ren->scroll_y = 0;
     ren->mode = MODE_NORMAL;
+    ren->menu_open = 0;
+    ren->dragging_scrollbar = 0;
     memset(ren->modal_buffer, 0, sizeof(ren->modal_buffer));
 
     return ren;
@@ -63,6 +65,16 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
     int line_height = ren->font->ascent + ren->font->descent;
     int status_bar_height = line_height + 10;
 
+    // Render Menu Bar
+    XftDrawRect(ren->draw, &ren->selection_color, 0, 0, win_width, MENU_HEIGHT);
+    XftDrawRect(ren->draw, &ren->accent_color, 0, MENU_HEIGHT - 1, win_width, 1);
+    const char *menus[] = {"File", "Edit", "View", "Help"};
+    int menu_x = 10;
+    for (int i = 0; i < 4; i++) {
+        XftDrawString8(ren->draw, &ren->color, ren->font, menu_x, 20, (XftChar8*)menus[i], strlen(menus[i]));
+        menu_x += 60;
+    }
+
     // Calculate gutter width
     int total_lines = buffer_get_total_lines(buf);
     char line_num_str[16];
@@ -76,7 +88,7 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
 
     // First pass: find cursor pixel coordinates
     int cursor_pixel_x = gutter_width + 10;
-    int cursor_pixel_y = 50;
+    int cursor_pixel_y = MENU_HEIGHT + 50;
     for (size_t i = 0; i < buf->gap_start; ) {
         unsigned char c = (unsigned char)buf->data[i];
         if (c == '\n') {
@@ -90,15 +102,15 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
         }
     }
 
-    if (cursor_pixel_y - ren->scroll_y < 50) {
-        ren->scroll_y = cursor_pixel_y - 50;
+    if (cursor_pixel_y - ren->scroll_y < MENU_HEIGHT + 50) {
+        ren->scroll_y = cursor_pixel_y - (MENU_HEIGHT + 50);
     } else if (cursor_pixel_y - ren->scroll_y > win_height - status_bar_height - line_height) {
         ren->scroll_y = cursor_pixel_y - (win_height - status_bar_height - line_height);
     }
 
     // Render Tab Bar
     int tab_x = 10;
-    int tab_y = 20;
+    int tab_y = MENU_HEIGHT + 20;
     for (size_t i = 0; i < bm->count; i++) {
         const char *name = bm->buffers[i]->filename ? bm->buffers[i]->filename : "[New]";
         XftColor tab_color = (i == bm->current) ? ren->accent_color : ren->color;
@@ -113,10 +125,10 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
     }
 
     // Draw Gutter Background
-    XftDrawRect(ren->draw, &ren->selection_color, 0, 30, gutter_width, win_height - status_bar_height - 30);
+    XftDrawRect(ren->draw, &ren->selection_color, 0, MENU_HEIGHT + 30, gutter_width, win_height - status_bar_height - (MENU_HEIGHT + 30));
 
     int x = gutter_width + 10;
-    int y = 50 - ren->scroll_y;
+    int y = MENU_HEIGHT + 50 - ren->scroll_y;
     int current_line_num = 1;
 
     // Draw first line number
@@ -136,13 +148,13 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
             current_line_num++;
             x = gutter_width + 10;
             y += line_height;
-            if (y > 30 && y < win_height - status_bar_height + line_height) {
+            if (y > MENU_HEIGHT + 30 && y < win_height - status_bar_height + line_height) {
                 snprintf(line_num_str, sizeof(line_num_str), "%d", current_line_num);
                 XftDrawString8(ren->draw, &ren->accent_color, ren->font, 5, y, (XftChar8*)line_num_str, strlen(line_num_str));
             }
             i++;
         } else {
-            if (y > 30 && y < win_height - status_bar_height + line_height) {
+            if (y > MENU_HEIGHT + 30 && y < win_height - status_bar_height + line_height) {
                 XftDrawStringUtf8(ren->draw, &ren->color, ren->font, x, y, (FcChar8*)&buf->data[i], len);
             }
             x += ren->font->max_advance_width;
@@ -170,13 +182,13 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
             current_line_num++;
             x = gutter_width + 10;
             y += line_height;
-            if (y > 30 && y < win_height - status_bar_height + line_height) {
+            if (y > MENU_HEIGHT + 30 && y < win_height - status_bar_height + line_height) {
                 snprintf(line_num_str, sizeof(line_num_str), "%d", current_line_num);
                 XftDrawString8(ren->draw, &ren->accent_color, ren->font, 5, y, (XftChar8*)line_num_str, strlen(line_num_str));
             }
             i++;
         } else {
-            if (y > 30 && y < win_height - status_bar_height + line_height) {
+            if (y > MENU_HEIGHT + 30 && y < win_height - status_bar_height + line_height) {
                 XftDrawStringUtf8(ren->draw, &ren->color, ren->font, x, y, (FcChar8*)&buf->data[i], len);
             }
             x += ren->font->max_advance_width;
@@ -184,15 +196,29 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
         }
     }
 
+    // Render Scrollbar
+    int sb_x = win_width - SCROLLBAR_WIDTH;
+    int sb_y = MENU_HEIGHT + 30;
+    int sb_h = win_height - status_bar_height - sb_y;
+    XftDrawRect(ren->draw, &ren->selection_color, sb_x, sb_y, SCROLLBAR_WIDTH, sb_h);
+    
+    int content_h = total_lines * line_height;
+    if (content_h > sb_h) {
+        int thumb_h = (sb_h * sb_h) / content_h;
+        if (thumb_h < 20) thumb_h = 20;
+        int thumb_y = sb_y + (ren->scroll_y * (sb_h - thumb_h)) / (content_h - sb_h + 1);
+        XftDrawRect(ren->draw, &ren->accent_color, sb_x + 2, thumb_y, SCROLLBAR_WIDTH - 4, thumb_h);
+    }
+
     // Status Bar
-    int sb_y = win_height - 5;
+    int sb_text_y = win_height - 5;
     int line, col;
     buffer_get_line_col(buf, &line, &col);
     char status[256];
     snprintf(status, sizeof(status), "Line: %d, Col: %d | %s", line, col, buf->filename ? buf->filename : "Untitled");
     
     XftDrawRect(ren->draw, &ren->accent_color, 0, win_height - status_bar_height, win_width, 1);
-    XftDrawString8(ren->draw, &ren->color, ren->font, 10, sb_y, (XftChar8*)status, strlen(status));
+    XftDrawString8(ren->draw, &ren->color, ren->font, 10, sb_text_y, (XftChar8*)status, strlen(status));
 
     // Modal
     if (ren->mode != MODE_NORMAL) {

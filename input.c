@@ -163,3 +163,50 @@ void handle_keypress(XEvent *ev, BufferManager *bm, Renderer *ren) {
         }
     }
 }
+
+void handle_mouse_event(XEvent *ev, BufferManager *bm, Renderer *ren) {
+    Buffer *buf = buffer_manager_current(bm);
+    if (!buf) return;
+
+    XWindowAttributes attrs;
+    XGetWindowAttributes(ren->dsp, ren->win, &attrs);
+    int win_width = attrs.width;
+    int win_height = attrs.height;
+    int line_height = ren->font->ascent + ren->font->descent;
+    int status_bar_height = line_height + 10;
+    int sb_y_start = MENU_HEIGHT + 30;
+    int sb_height = win_height - status_bar_height - sb_y_start;
+
+    if (ev->type == ButtonPress) {
+        int x = ev->xbutton.x;
+        int y = ev->xbutton.y;
+
+        // Check Menu Bar
+        if (y < MENU_HEIGHT) {
+            if (x < 70) printf("File menu clicked\n");
+            else if (x < 130) printf("Edit menu clicked\n");
+            else if (x < 190) printf("View menu clicked\n");
+            else if (x < 250) printf("Help menu clicked\n");
+            return;
+        }
+
+        // Check Scrollbar
+        if (x >= win_width - SCROLLBAR_WIDTH && y >= sb_y_start && y < win_height - status_bar_height) {
+            ren->dragging_scrollbar = 1;
+        }
+    } else if (ev->type == ButtonRelease) {
+        ren->dragging_scrollbar = 0;
+    } else if (ev->type == MotionNotify) {
+        if (ren->dragging_scrollbar) {
+            int y = ev->xmotion.y;
+            int total_lines = buffer_get_total_lines(buf);
+            int content_h = total_lines * line_height;
+            if (content_h > sb_height) {
+                int relative_y = y - sb_y_start;
+                if (relative_y < 0) relative_y = 0;
+                if (relative_y > sb_height) relative_y = sb_height;
+                ren->scroll_y = (relative_y * content_h) / sb_height;
+            }
+        }
+    }
+}
