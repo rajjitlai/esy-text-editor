@@ -34,7 +34,9 @@ Renderer* render_init(Display *dsp, Window win) {
     ren->mode = MODE_NORMAL;
     ren->menu_open = 0;
     ren->dragging_scrollbar = 0;
+    ren->show_about = 0;
     memset(ren->modal_buffer, 0, sizeof(ren->modal_buffer));
+    memset(ren->find_buffer, 0, sizeof(ren->find_buffer));
 
     return ren;
 }
@@ -229,7 +231,57 @@ void render_buffer(Renderer *ren, BufferManager *bm) {
         char prompt[300];
         if (ren->mode == MODE_COMMAND) snprintf(prompt, sizeof(prompt), "Command: %s", ren->modal_buffer);
         else if (ren->mode == MODE_SEARCH) snprintf(prompt, sizeof(prompt), "Search: %s", ren->modal_buffer);
+        else if (ren->mode == MODE_SAVE_AS) snprintf(prompt, sizeof(prompt), "Save As: %s", ren->modal_buffer);
+        else if (ren->mode == MODE_REPLACE_FIND) snprintf(prompt, sizeof(prompt), "Find: %s", ren->modal_buffer);
+        else if (ren->mode == MODE_REPLACE_WITH) snprintf(prompt, sizeof(prompt), "Replace with: %s", ren->modal_buffer);
         XftDrawString8(ren->draw, &ren->color, ren->font, 10, modal_y + line_height + 5, (XftChar8*)prompt, strlen(prompt));
+    }
+
+    // Render Dropdown Menu if open
+    if (ren->menu_open > 0) {
+        const char *items[][6] = {
+            {"New", "Save", "Save As", "Close", "Quit", NULL},
+            {"Cut", "Copy", "Paste", "Find", "Replace", NULL},
+            {"Toggle Theme", NULL},
+            {"About", NULL}
+        };
+        int menu_idx = ren->menu_open - 1;
+        int x_off = 10 + (menu_idx * 60);
+        int item_h = line_height + 10;
+        int count = 0;
+        while (items[menu_idx][count]) count++;
+
+        int menu_w = 120;
+        int menu_h = count * item_h;
+
+        // Draw Shadow/Background
+        XftDrawRect(ren->draw, &ren->selection_color, x_off, MENU_HEIGHT, menu_w, menu_h);
+        XftDrawRect(ren->draw, &ren->accent_color, x_off, MENU_HEIGHT, menu_w, 1); // Top border
+        XftDrawRect(ren->draw, &ren->accent_color, x_off, MENU_HEIGHT, 1, menu_h); // Left border
+        XftDrawRect(ren->draw, &ren->accent_color, x_off + menu_w - 1, MENU_HEIGHT, 1, menu_h); // Right border
+        XftDrawRect(ren->draw, &ren->accent_color, x_off, MENU_HEIGHT + menu_h - 1, menu_w, 1); // Bottom border
+
+        for (int i = 0; i < count; i++) {
+            XftDrawString8(ren->draw, &ren->color, ren->font, x_off + 10, MENU_HEIGHT + (i + 1) * item_h - 10, (XftChar8*)items[menu_idx][i], strlen(items[menu_idx][i]));
+        }
+    }
+
+    // Render About Popup
+    if (ren->show_about) {
+        int popup_w = 400;
+        int popup_h = 150;
+        int popup_x = (win_width - popup_w) / 2;
+        int popup_y = (win_height - popup_h) / 2;
+
+        XftDrawRect(ren->draw, &ren->bg_color, popup_x, popup_y, popup_w, popup_h);
+        XftDrawRect(ren->draw, &ren->accent_color, popup_x, popup_y, popup_w, 2);
+        XftDrawRect(ren->draw, &ren->accent_color, popup_x, popup_y + popup_h - 2, popup_w, 2);
+        XftDrawRect(ren->draw, &ren->accent_color, popup_x, popup_y, 2, popup_h);
+        XftDrawRect(ren->draw, &ren->accent_color, popup_x + popup_w - 2, popup_y, 2, popup_h);
+
+        XftDrawString8(ren->draw, &ren->accent_color, ren->font, popup_x + 20, popup_y + 40, (XftChar8*)"About esy-text-editor", 21);
+        XftDrawString8(ren->draw, &ren->color, ren->font, popup_x + 20, popup_y + 80, (XftChar8*)"A lightweight C/X11 Text Editor", 31);
+        XftDrawString8(ren->draw, &ren->color, ren->font, popup_x + 20, popup_y + 120, (XftChar8*)"[Click anywhere to close]", 25);
     }
 }
 

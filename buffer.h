@@ -44,6 +44,7 @@ void buffer_manager_destroy(BufferManager *bm);
 void buffer_manager_add(BufferManager *bm, Buffer *buf);
 void buffer_manager_next(BufferManager *bm);
 void buffer_manager_prev(BufferManager *bm);
+void buffer_manager_close_current(BufferManager *bm);
 Buffer* buffer_manager_current(BufferManager *bm);
 
 #endif

@@ -277,6 +277,20 @@ void buffer_manager_prev(BufferManager *bm) {
     }
 }
 
+void buffer_manager_close_current(BufferManager *bm) {
+    if (bm->count == 0) return;
+    buffer_destroy(bm->buffers[bm->current]);
+    for (size_t i = bm->current; i < bm->count - 1; i++) {
+        bm->buffers[i] = bm->buffers[i+1];
+    }
+    bm->count--;
+    if (bm->count > 0) {
+        if (bm->current >= bm->count) bm->current = bm->count - 1;
+    } else {
+        buffer_manager_add(bm, buffer_create(NULL));
+    }
+}
+
 Buffer* buffer_manager_current(BufferManager *bm) {
     if (bm->count == 0) return NULL;
     return bm->buffers[bm->current];

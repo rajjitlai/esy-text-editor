@@ -13,7 +13,10 @@ typedef enum {
 typedef enum {
     MODE_NORMAL,
     MODE_COMMAND,
-    MODE_SEARCH
+    MODE_SEARCH,
+    MODE_SAVE_AS,
+    MODE_REPLACE_FIND,
+    MODE_REPLACE_WITH
 } InputMode;
 
 #define MENU_HEIGHT 30
@@ -34,8 +37,10 @@ typedef struct {
     Theme theme;
     InputMode mode;
     char modal_buffer[256];
+    char find_buffer[256];
     int menu_open;
     int dragging_scrollbar;
+    int show_about;
 } Renderer;
 
 Renderer* render_init(Display *dsp, Window win);
