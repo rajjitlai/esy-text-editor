@@ -77,8 +77,6 @@ void handle_keypress(XEvent *ev, BufferManager *bm, Renderer *ren) {
             ren->mode = MODE_COMMAND;
             return;
         } else if (sym == XK_c) {
-...
-
             if (buf->selecting) {
                 size_t start, end;
                 buffer_get_selection_range(buf, &start, &end);
