@@ -1,9 +1,0 @@
-Notes.md
-editor
-.vscode
-
-# run commands
-gcc -o editor *.c
-
-# prev code
-code
