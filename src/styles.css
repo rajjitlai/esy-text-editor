@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 14%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 14%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --ring: 0 0% 90%;
+  --radius: 1rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 35%),
+    linear-gradient(180deg, #070707 0%, #0c0c0c 100%);
+  color: hsl(var(--foreground));
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.markdown-preview {
+  color: hsl(var(--foreground));
+  line-height: 1.75;
+}
+
+.markdown-preview :where(h1, h2, h3, h4, h5, h6) {
+  margin: 1.4em 0 0.5em;
+  line-height: 1.2;
+}
+
+.markdown-preview :where(h1) {
+  font-size: 2rem;
+}
+
+.markdown-preview :where(h2) {
+  font-size: 1.5rem;
+}
+
+.markdown-preview :where(h3) {
+  font-size: 1.2rem;
+}
+
+.markdown-preview :where(p, ul, ol, blockquote, pre, table) {
+  margin: 0.9rem 0;
+}
+
+.markdown-preview :where(a) {
+  color: hsl(var(--foreground));
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.markdown-preview :where(pre) {
+  background: #111;
+  color: #f5f5f5;
+  border-radius: 1rem;
+  border: 1px solid hsl(var(--border));
+  padding: 1rem;
+}
+
+.markdown-preview :where(code) {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.4rem;
+}
+
+.markdown-preview :where(table) {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.markdown-preview :where(th, td) {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 0.75rem;
+}
+
+.markdown-preview :where(blockquote) {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1rem;
+  color: hsl(var(--muted-foreground));
+}

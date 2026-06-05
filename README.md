@@ -1,71 +1,70 @@
-# esy-text-editor
+# Esy Text Editor
 
-A lightweight, modern text editor built with C and X11 (Xlib/Xft). This editor uses a **Gap Buffer** for efficient text manipulation and features anti-aliased font rendering via **Xft**.
+Esy Text Editor is being rebuilt as a minimal Electron desktop app for markdown-first editing. The old C/X11 direction is gone.
 
-## 🚀 Features
+## Stack
 
--   **High Performance:** Uses a Gap Buffer for $O(1)$ insertions and deletions at the cursor.
--   **Modern Rendering:** Beautiful, anti-aliased text rendering using the Xft library.
--   **UTF-8 Support:** Full support for multi-byte characters (emojis, symbols, etc.).
--   **Visual Selection:** Hold `Shift` while navigating to select and highlight text.
--   **System Clipboard:** Seamless Copy (`Ctrl+C`), Cut (`Ctrl+X`), and Paste (`Ctrl+V`) integration with other applications.
--   **Multiple Tabs:** Open several files at once and cycle through them with the `Tab` key.
--   **Integrated Search:** Search within the buffer using `Ctrl+F` and jump to next matches with `F3`.
--   **Command Palette:** Access powerful commands via `Ctrl+Shift+P`.
--   **Line Numbers:** A dynamic gutter that follows your text.
--   **Theming:** Toggle between Dark and Light modes instantly with `Ctrl+L`.
+- React renderer
+- Electron main process
+- Tailwind CSS
+- shadcn-style monochrome UI
+- Markdown preview with `react-markdown` + `remark-gfm`
+- Electron Builder for distributables
 
-## 🛠️ Installation & Build
+## Current Scope
 
-To compile the editor on a Linux system (like Zorin OS, Ubuntu, or Debian), you will need the X11 and Xft development headers.
+- Workspace-based file browsing
+- Tabs for multiple open documents
+- Markdown editing with live preview
+- Formatting toolbar for common markdown actions
+- Cross-platform packaging target
 
-### 1. Install Dependencies
+## Project Structure
+
+- `electron/main.ts` handles window creation, file dialogs, and filesystem access
+- `electron/preload.ts` exposes the minimal IPC bridge
+- `src/App.tsx` contains the workspace, tabs, editor, and preview UI
+- `src/styles.css` defines the monochrome theme and layout tokens
+
+## Development
+
+The repo is scaffolded for the following workflow:
+
 ```bash
-sudo apt update
-sudo apt install build-essential libx11-dev libxft-dev libfontconfig1-dev pkg-config
+npm install
+npm run dev
 ```
 
-### 2. Compile
+For the desktop shell during development:
+
 ```bash
-make
+npm run dev:desktop
 ```
 
-### 3. Run
+## Build
+
 ```bash
-./editor [filename1] [filename2] ...
+npm run generate:icons
+npm run build
+npm run dist
 ```
 
-## ⌨️ Controls
+## Release Targets
 
-| Key | Action |
-| :--- | :--- |
-| **Arrow Keys** | Navigate text |
-| **Ctrl + Left/Right** | Jump between words |
-| **Shift + Arrows** | Select text |
-| **Home / End** | Jump to start/end of line |
-| **Page Up/Down** | Scroll up/down 10 lines |
-| **Tab** | Switch to the next open file/tab |
-| **Ctrl + S** | Save the current file |
-| **Ctrl + T** | Open a new empty tab |
-| **Ctrl + L** | Toggle Dark/Light theme |
-| **Ctrl + F** | Search text |
-| **F3** | Find next occurrence |
-| **Ctrl + Shift + P** | Open Command Palette |
+- Windows: `nsis` and `portable`
+- macOS: `dmg` and `zip`
+- Linux: `AppImage` and `deb`
 
-### 🛠️ Command Palette Commands
-Open with `Ctrl + Shift + P`, type the command, and press `Return`:
-- `save` : Save current file.
-- `quit` : Exit the editor.
-- `theme`: Toggle the theme.
-- `goto <number>`: Jump to a specific line (e.g., `goto 10`).
-- `next` / `prev`: Cycle through tabs.
+## Notes
 
-## ⚙️ Configuration
-The editor looks for a `.editorrc` file in the execution directory.
-Example `.editorrc`:
-```text
-theme=dark
-```
+- This is a scaffold, not a finished editor.
+- The renderer currently assumes markdown-focused editing rather than full WYSIWYG authoring.
+- File access stays in the main process for safety.
 
-## 📜 License
-MIT
+## Project Files
+
+- [`CHANGELOG.md`](D:/Code/Optimization/esy-text-editor/CHANGELOG.md)
+- [`LICENSE`](D:/Code/Optimization/esy-text-editor/LICENSE)
+- [`CONTRIBUTING.md`](D:/Code/Optimization/esy-text-editor/CONTRIBUTING.md)
+- [`CODE_OF_CONDUCT.md`](D:/Code/Optimization/esy-text-editor/CODE_OF_CONDUCT.md)
+- [`SECURITY.md`](D:/Code/Optimization/esy-text-editor/SECURITY.md)
