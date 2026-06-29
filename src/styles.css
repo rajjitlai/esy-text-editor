@@ -91,6 +91,8 @@ textarea {
 .markdown-preview {
   color: hsl(var(--foreground));
   line-height: 1.75;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .markdown-preview :where(h1, h2, h3, h4, h5, h6) {
@@ -126,6 +128,8 @@ textarea {
   border-radius: 1rem;
   border: 1px solid hsl(var(--border));
   padding: 1rem;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .markdown-preview :where(code) {
@@ -135,8 +139,16 @@ textarea {
 }
 
 .markdown-preview :where(table) {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
+}
+
+.markdown-preview :where(img) {
+  max-width: 100%;
+  height: auto;
 }
 
 .markdown-preview :where(th, td) {

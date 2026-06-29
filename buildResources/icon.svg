@@ -1,9 +1,11 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Esy Text Editor</title>
-  <desc id="desc">A minimal black and white logo built from the word ESY.</desc>
+  <desc id="desc">A minimal black and white logo built from the letters E, S, and Y.</desc>
   <rect width="512" height="512" rx="112" fill="#070707"/>
-  <rect x="48" y="48" width="416" height="416" rx="88" stroke="#F5F5F5" stroke-width="16"/>
-  <path d="M132 164H312V204H178V240H284V278H178V348H312V388H132V164Z" fill="#F5F5F5"/>
-  <path d="M344 164H390L286 272V388H246V272L144 164H192L266 244L344 164Z" fill="#F5F5F5"/>
-  <path d="M164 164H214L256 226L298 164H348L278 262L350 388H300L256 320L212 388H162L234 262L164 164Z" fill="#F5F5F5"/>
+  <rect x="35.84" y="35.84" width="440.32" height="440.32" rx="84.48" stroke="#F5F5F5" stroke-width="20.48"/>
+  <path d="M92.16 122.88H225.28V163.84H174.08V235.52H204.8V276.48H174.08V348.16H225.28V389.12H92.16V122.88Z" fill="#F5F5F5"/>
+  <path d="M220.16 122.88H312.32V163.84H261.12V235.52H312.32V389.12H220.16V348.16H271.36V276.48H220.16V122.88Z" fill="#F5F5F5"/>
+  <path d="M363.52 245.76H404.48V389.12H363.52Z" fill="#F5F5F5"/>
+  <path d="M317.44 122.88H358.4L384 220.16H353.28Z" fill="#F5F5F5"/>
+  <path d="M409.6 122.88H450.56L409.6 220.16H378.88Z" fill="#F5F5F5"/>
 </svg>

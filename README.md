@@ -1,82 +1,85 @@
 # Esy Text Editor
 
-Esy Text Editor is being rebuilt as a minimal Electron desktop app for markdown-first editing. The old C/X11 direction is gone.
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=flat-square)](file:///D:/Code/esy-text-editor/LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-black.svg?style=flat-square)](file:///D:/Code/esy-text-editor/package.json)
+[![Platform Support](https://img.shields.io/badge/Platform-Windows_|_macOS_|_Linux-black.svg?style=flat-square)](file:///D:/Code/esy-text-editor/package.json)
+[![Built With](https://img.shields.io/badge/Built_With-React_|_Electron_|_Tailwind-blue.svg?style=flat-square)](file:///D:/Code/esy-text-editor/package.json)
 
-## Stack
+Esy Text Editor is a minimal, markdown-first desktop workspace built with React, Tailwind CSS, and Electron. It features a sleek monochrome design, multi-document tab controls, and real-time preview rendering.
 
-- React renderer
-- Electron main process
-- Tailwind CSS
-- shadcn-style monochrome UI
-- Markdown preview with `react-markdown` + `remark-gfm`
-- Electron Builder for distributables
+---
 
-## Current Scope
+## Features
 
-- Workspace-based file browsing
-- Tabs for multiple open documents
-- Markdown editing with live preview
-- Formatting toolbar for common markdown actions
-- Cross-platform packaging target
+- **Multi-Tab File Management**: Work on multiple documents simultaneously. Displays a dirty indicator for unsaved changes and prompts on close to prevent data loss.
+- **CodeMirror 6 Editor**: Includes syntax highlighting, active line highlighting, custom gutters, formatting buttons, and smart line wrapping configurations.
+- **Debounced Live Preview**: Side-by-side rendering using `react-markdown` and `remark-gfm`, optimized with a 150ms keystroke debounce to prevent editing lag.
+- **Find and Replace**: Embedded in-editor search tool supporting match indexing, next/previous transitions, and standard replace/replace-all functions.
+- **Clean Titlebar & Theme Control**: Frameless OS-style custom titlebar controls matching a toggleable dark/light monochrome stylesheet.
+- **Recent Files & History**: Sidebar logs recently opened files with options to clear workspace history on demand.
+
+---
 
 ## Project Structure
 
-- `electron/main.ts` handles window creation, file dialogs, and filesystem access
-- `electron/preload.ts` exposes the minimal IPC bridge
-- `src/App.tsx` contains the workspace, tabs, editor, and preview UI
-- `src/styles.css` defines the monochrome theme and layout tokens
+- [main.ts](file:///D:/Code/esy-text-editor/electron/main.ts): Configures native window parameters, auto-updater handlers, and local filesystem IPC methods.
+- [preload.ts](file:///D:/Code/esy-text-editor/electron/preload.ts): Defines secure context isolation boundaries, exposing IPC channels to the renderer.
+- [App.tsx](file:///D:/Code/esy-text-editor/src/App.tsx): Core React component orchestrating the sidebar, settings, tabs, search, and preview controls.
+- [styles.css](file:///D:/Code/esy-text-editor/src/styles.css): Outlines the monochrome stylesheet, root CSS variables, scrollbars, and markdown preview scaling rules.
+
+---
 
 ## Development
 
-The repo is scaffolded for the following workflow:
+Set up dependencies and start the hot-reloading web renderer:
 
 ```bash
 npm install
 npm run dev
 ```
 
-For the desktop shell during development:
+To run the application inside the Electron desktop shell:
 
 ```bash
 npm run dev:desktop
 ```
 
-## Build
+---
+
+## Production Build
+
+Generate application platform binaries:
 
 ```bash
+# 1. Re-generate icons from SVG source if changed
 npm run generate:icons
+
+# 2. Compile renderer code and main processes
 npm run build
+
+# 3. Package binaries for target OS (Windows, macOS, Linux)
 npm run dist
 ```
 
-## Release Targets
-
-- Windows: `nsis` and `portable`
-- macOS: `dmg` and `zip`
-- Linux: `AppImage` and `deb`
+---
 
 ## Auto Updates
 
-- Auto updates are configured with `electron-updater` and GitHub Releases for `rajjitlai/esy-text-editor`.
-- Packaged builds can check, download, and install updates from published releases.
-- Development update testing uses `dev-app-update.yml`.
-- To publish update metadata and release artifacts from CI or locally, provide `GH_TOKEN` or `GITHUB_TOKEN`.
-- macOS auto updates still require proper code signing.
+- Auto updates are configured using `electron-updater` pulling from GitHub Releases.
+- Packaged builds will automatically query the repository, download matching installers, and prompt users to reboot when updates are downloaded.
+- Provide `GH_TOKEN` or `GITHUB_TOKEN` in your environment to deploy release artifacts.
 
-## Notes
+---
 
-- This is a scaffold, not a finished editor.
-- The renderer currently assumes markdown-focused editing rather than full WYSIWYG authoring.
-- File access stays in the main process for safety.
+## License
 
-## Development Credits
+This project is licensed under the Apache License 2.0. See the [LICENSE](file:///D:/Code/esy-text-editor/LICENSE) file for details.
 
-- This project is being developed with OpenAI Codex using GPT-5.4 models.
+---
 
-## Project Files
+## Project Resources
 
-- [`CHANGELOG.md`](D:/Code/Optimization/esy-text-editor/CHANGELOG.md)
-- [`LICENSE`](D:/Code/Optimization/esy-text-editor/LICENSE)
-- [`CONTRIBUTING.md`](D:/Code/Optimization/esy-text-editor/CONTRIBUTING.md)
-- [`CODE_OF_CONDUCT.md`](D:/Code/Optimization/esy-text-editor/CODE_OF_CONDUCT.md)
-- [`SECURITY.md`](D:/Code/Optimization/esy-text-editor/SECURITY.md)
+- [CHANGELOG.md](file:///D:/Code/esy-text-editor/CHANGELOG.md)
+- [CONTRIBUTING.md](file:///D:/Code/esy-text-editor/CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](file:///D:/Code/esy-text-editor/CODE_OF_CONDUCT.md)
+- [SECURITY.md](file:///D:/Code/esy-text-editor/SECURITY.md)

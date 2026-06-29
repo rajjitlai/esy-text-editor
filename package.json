@@ -4,6 +4,7 @@
   "private": true,
   "description": "Esy Text Editor is a minimal markdown workspace built with React, Tailwind CSS, and Electron.",
   "author": "Rajjit Laishram <20rajjit@gmail.com>",
+  "license": "Apache-2.0",
   "main": "dist-electron/main.js",
   "scripts": {
     "generate:icons": "node scripts/generate-icons.mjs",

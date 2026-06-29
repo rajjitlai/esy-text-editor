@@ -423,6 +423,10 @@ function App() {
     });
   }
 
+  function clearRecentFiles() {
+    setRecentFiles([]);
+  }
+
   async function openFolder() {
     const result = await editorBridge.openFolder();
     if (!result) {
@@ -795,13 +799,13 @@ function App() {
   return (
     <div
       className={cn(
-        "min-h-screen bg-background text-foreground",
+        "h-screen w-screen overflow-hidden bg-background text-foreground select-none",
         preferences.invertTheme ? "theme-inverted" : ""
       )}
     >
-      <div className="grid min-h-screen grid-rows-[auto_auto_1fr]">
+      <div className="grid h-full grid-rows-[auto_auto_1fr] overflow-hidden">
         <div
-          className="app-drag-region flex h-9 items-center justify-between border-b border-border bg-card/90 pl-3"
+          className="app-drag-region flex h-9 shrink-0 items-center justify-between border-b border-border bg-card/90 pl-3"
           onDoubleClick={() => {
             void toggleMaximizeWindow();
           }}
@@ -843,7 +847,7 @@ function App() {
           </div>
         </div>
 
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card/80 px-3 py-3 backdrop-blur sm:px-4">
+        <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-border bg-card/80 px-3 py-2 backdrop-blur sm:px-4">
           <div className="flex min-w-0 items-center gap-3">
             <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(true)} className="lg:hidden">
               <Menu className="h-4 w-4" />
@@ -853,10 +857,6 @@ function App() {
             <Button variant="ghost" onClick={() => setSettingsOpen(true)} className="flex-1 sm:flex-none">
               <SettingsIcon className="mr-2 h-4 w-4" />
               Settings
-            </Button>
-            <Button variant="secondary" onClick={openFolder} className="flex-1 sm:flex-none">
-              <FolderOpen className="mr-2 h-4 w-4" />
-              Open Folder
             </Button>
             <Button variant="secondary" onClick={openFileDialog} className="flex-1 sm:flex-none">
               <FileText className="mr-2 h-4 w-4" />
@@ -920,7 +920,7 @@ function App() {
 
         <div
           className={cn(
-            "grid min-h-0",
+            "grid min-h-0 h-full overflow-hidden",
             settingsOpen
               ? sidebarCollapsed
                 ? "lg:grid-cols-[80px_minmax(0,1fr)] xl:grid-cols-[80px_minmax(0,1fr)_360px]"
@@ -932,7 +932,7 @@ function App() {
         >
           <aside
             className={cn(
-              "fixed inset-y-0 left-0 z-30 flex min-h-0 flex-col border-r border-border bg-card transition-[width,transform] duration-500 ease-in-out lg:static lg:z-0 lg:w-auto",
+              "fixed inset-y-0 left-0 z-30 flex min-h-0 flex-col border-r border-border bg-card transition-[width,transform] duration-500 ease-in-out lg:static lg:z-0 lg:w-auto h-full overflow-hidden",
               sidebarCollapsed ? "w-[80px]" : "w-[280px]",
               sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}
@@ -1002,8 +1002,14 @@ function App() {
             <div className="min-h-0 flex-1 overflow-auto p-2">
               {!sidebarCollapsed && recentFiles.length > 0 ? (
                 <div className="mb-4">
-                  <div className="mb-2 px-1 text-xs uppercase tracking-[0.24em] text-muted-foreground">
-                    Recent
+                  <div className="mb-2 flex items-center justify-between px-1 text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                    <span>Recent</span>
+                    <button
+                      onClick={clearRecentFiles}
+                      className="text-[10px] lowercase tracking-normal text-muted-foreground transition hover:text-foreground"
+                    >
+                      clear
+                    </button>
                   </div>
                   <div className="space-y-1">
                     {recentFiles.map((file) => (
@@ -1076,8 +1082,8 @@ function App() {
             </div>
           </aside>
 
-          <main className="grid min-h-0 grid-rows-[auto_auto_auto_1fr] bg-background lg:min-w-0">
-            <div className="flex gap-2 overflow-x-auto border-b border-border px-3 py-2">
+          <main className="grid min-h-0 h-full grid-rows-[auto_auto_auto_1fr] bg-background lg:min-w-0 overflow-hidden">
+            <div className="flex shrink-0 gap-2 overflow-x-auto border-b border-border px-3 py-2">
               {tabs.map((tab) => (
                 <div
                   key={tab.id}
@@ -1109,7 +1115,7 @@ function App() {
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+            <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border px-3 py-2">
               <FormattingButton label="H1" onClick={() => applyFormatting((editor) => editor.insertPrefix("# "))} />
               <FormattingButton label="Bold" onClick={() => applyFormatting((editor) => editor.wrapSelection("**"))} />
               <FormattingButton label="Italic" onClick={() => applyFormatting((editor) => editor.wrapSelection("*"))} />
@@ -1121,7 +1127,7 @@ function App() {
             </div>
 
             {findState.isFindOpen ? (
-              <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+              <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border px-3 py-2">
                 <Input
                   ref={findInputRef}
                   value={findState.findQuery}
@@ -1178,14 +1184,16 @@ function App() {
 
             <div
               className={cn(
-                "grid min-h-0",
-                preferences.showPreview ? "grid-cols-1 2xl:grid-cols-2" : "grid-cols-1"
+                "grid min-h-0 h-full overflow-hidden",
+                preferences.showPreview
+                  ? "grid-cols-1 grid-rows-[1fr_1fr] lg:grid-cols-2 lg:grid-rows-none"
+                  : "grid-cols-1"
               )}
             >
               <section
                 className={cn(
-                  "min-h-0",
-                  preferences.showPreview ? "2xl:border-r 2xl:border-border" : ""
+                  "min-h-0 h-full overflow-hidden",
+                  preferences.showPreview ? "lg:border-r lg:border-border" : ""
                 )}
               >
                 <MarkdownEditor
@@ -1198,7 +1206,7 @@ function App() {
                 />
               </section>
               {preferences.showPreview ? (
-                <section className="min-h-0 overflow-auto border-t border-border bg-card/30 p-4 2xl:border-t-0">
+                <section className="min-h-0 h-full overflow-auto border-t border-border bg-card/30 p-4 lg:border-t-0">
                   <Card className="markdown-preview max-w-none border-border bg-background p-6 text-foreground">
                     <MarkdownPreview content={activeTab?.content ?? ""} />
                   </Card>
@@ -1210,7 +1218,7 @@ function App() {
           {settingsOpen ? (
             <aside
               className={cn(
-                "fixed inset-y-0 right-0 z-30 flex w-full min-h-0 max-w-[360px] flex-col border-l border-border bg-card transition-transform sm:w-[360px] xl:static xl:z-0 xl:w-auto",
+                "fixed inset-y-0 right-0 z-30 flex w-full min-h-0 max-w-[360px] flex-col border-l border-border bg-card transition-transform sm:w-[360px] xl:static xl:z-0 xl:w-auto h-full overflow-hidden",
                 settingsOpen ? "translate-x-0" : "translate-x-full"
               )}
             >
@@ -1306,6 +1314,22 @@ function App() {
                         </Button>
                       ) : null}
                       <p className="text-xs text-muted-foreground">{updateState.message}</p>
+                    </Card>
+                    <Card className="space-y-3 p-4">
+                      <div>
+                        <p className="text-sm font-medium">Recent Files</p>
+                        <p className="text-xs text-muted-foreground">
+                          Clear search and quick access history of recently opened files.
+                        </p>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        onClick={clearRecentFiles}
+                        disabled={recentFiles.length === 0}
+                        className="w-full"
+                      >
+                        Clear Recent Files
+                      </Button>
                     </Card>
                   </div>
                 ) : (
