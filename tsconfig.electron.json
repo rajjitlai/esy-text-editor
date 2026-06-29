@@ -4,8 +4,8 @@
     "composite": false,
     "noEmit": false,
     "outDir": "dist-electron",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "types": ["node"]
   },
   "include": ["electron/**/*.ts"]

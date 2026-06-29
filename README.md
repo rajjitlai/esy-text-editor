@@ -55,11 +55,23 @@ npm run dist
 - macOS: `dmg` and `zip`
 - Linux: `AppImage` and `deb`
 
+## Auto Updates
+
+- Auto updates are configured with `electron-updater` and GitHub Releases for `rajjitlai/esy-text-editor`.
+- Packaged builds can check, download, and install updates from published releases.
+- Development update testing uses `dev-app-update.yml`.
+- To publish update metadata and release artifacts from CI or locally, provide `GH_TOKEN` or `GITHUB_TOKEN`.
+- macOS auto updates still require proper code signing.
+
 ## Notes
 
 - This is a scaffold, not a finished editor.
 - The renderer currently assumes markdown-focused editing rather than full WYSIWYG authoring.
 - File access stays in the main process for safety.
+
+## Development Credits
+
+- This project is being developed with OpenAI Codex using GPT-5.4 models.
 
 ## Project Files
 

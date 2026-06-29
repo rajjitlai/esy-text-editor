@@ -22,6 +22,7 @@
     "@codemirror/view": "^6.38.2",
     "@radix-ui/react-slot": "^1.2.3",
     "clsx": "^2.1.1",
+    "electron-updater": "^6.6.2",
     "lucide-react": "^0.538.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -47,6 +48,13 @@
   "build": {
     "appId": "com.esytext.editor",
     "productName": "Esy Text Editor",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "rajjitlai",
+        "repo": "esy-text-editor"
+      }
+    ],
     "directories": {
       "buildResources": "buildResources",
       "output": "release"
